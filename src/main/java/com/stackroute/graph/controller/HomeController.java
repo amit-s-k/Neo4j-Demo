@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,13 +29,10 @@ public class HomeController {
             log.info("Fetching movie nodes");
             movies = IteratorUtils.toList(homeService.getAllMovies().iterator());
             responseEntity = new ResponseEntity(movies, HttpStatus.OK);
-
-
         } catch (Exception e) {
             e.printStackTrace();
             movies = Collections.emptyList();
             responseEntity = new ResponseEntity(movies, HttpStatus.BAD_GATEWAY);
-
         }
         return responseEntity;
     }
@@ -86,6 +80,20 @@ public class HomeController {
         } catch (Exception e) {
             e.printStackTrace();
             responseEntity = new ResponseEntity<>("Error occured while saving", HttpStatus.BAD_GATEWAY);
+        }
+        return responseEntity;
+    }
+
+    @GetMapping("/title/{title}")
+    public ResponseEntity<Movie> getMovieByTitle(@PathVariable String title) {
+        ResponseEntity<Movie> responseEntity;
+        try {
+
+            responseEntity = new ResponseEntity<>(homeService.getByTitle(title), HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseEntity = new ResponseEntity<>(new Movie(), HttpStatus.BAD_GATEWAY);
         }
         return responseEntity;
     }
